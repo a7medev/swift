@@ -3497,7 +3497,7 @@ public:
     std::string XML;
     {
       llvm::raw_string_ostream OS(XML);
-      getDocumentationCommentAsXML(D, OS);
+      getDocumentationCommentAsXML(D, OS, /*IncludeParameters=*/true);
     }
     OS << "DocCommentAsXML=";
     if (XML.empty()) {

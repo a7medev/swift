@@ -27,9 +27,11 @@ namespace ide {
 /// If the declaration has a documentation comment, prints the comment to \p OS
 /// in Clang-like XML format.
 ///
+/// \param IncludeParameters if true, includes the parameters part of the documentation comment and ignores it otherwise.
+///
 /// \returns true if the declaration has a documentation comment.
 bool getDocumentationCommentAsXML(
-  const Decl *D, raw_ostream &OS,
+  const Decl *D, raw_ostream &OS, bool IncludeParameters,
   TypeOrExtensionDecl SynthesizedTarget = TypeOrExtensionDecl());
 
 /// If the declaration has a documentation comment, prints the comment to \p OS

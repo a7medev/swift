@@ -38,8 +38,10 @@ using namespace swift;
 namespace {
 struct CommentToXMLConverter {
   raw_ostream &OS;
+  bool IncludeParameters;
 
-  CommentToXMLConverter(raw_ostream &OS) : OS(OS) {}
+  CommentToXMLConverter(raw_ostream &OS, bool IncludeParameters = true)
+      : OS(OS), IncludeParameters(IncludeParameters) {}
 
   void printRawHTML(StringRef Tag) {
     OS << "<rawHTML>";
@@ -224,6 +226,8 @@ struct CommentToXMLConverter {
   }
 
   void printParamField(const ParamField *PF) {
+    assert(IncludeParameters);
+    
     OS << "<Parameter>";
     OS << "<Name>";
     OS << PF->getName();
@@ -283,7 +287,7 @@ void CommentToXMLConverter::visitCommentParts(const swift::markup::CommentParts 
     OS << "</Abstract>";
   }
 
-  if (!Parts.ParamFields.empty()) {
+  if (!Parts.ParamFields.empty() && IncludeParameters) {
     OS << "<Parameters>";
     for (const auto *PF : Parts.ParamFields)
       printParamField(PF);
@@ -496,6 +500,7 @@ static DocComment *getCascadingDocComment(swift::markup::MarkupContext &MC,
 }
 
 bool ide::getDocumentationCommentAsXML(const Decl *D, raw_ostream &OS,
+                                       bool IncludeParameters,
                                        TypeOrExtensionDecl SynthesizedTarget) {
   auto MaybeClangNode = D->getClangNode();
   if (MaybeClangNode) {
@@ -516,7 +521,7 @@ bool ide::getDocumentationCommentAsXML(const Decl *D, raw_ostream &OS,
   if (!DC)
     return false;
 
-  CommentToXMLConverter Converter(OS);
+  CommentToXMLConverter Converter(OS, IncludeParameters);
   Converter.visitDocComment(DC, SynthesizedTarget);
 
   OS.flush();

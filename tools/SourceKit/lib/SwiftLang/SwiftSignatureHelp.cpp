@@ -97,11 +97,8 @@ deliverResults(SourceKit::SignatureHelpConsumer &SKConsumer,
     }
 
     SKResult.Signatures = SKSignatures;
+    SKResult.ActiveSignature = Result->Result->ActiveSignature;
 
-    // TODO(a7medev): Select active signature and param.
-    SKResult.ActiveSignature = 0;
-    SKResult.ActiveParam = 0;
-    
     SKConsumer.handleResult(SKResult);
     break;
   }

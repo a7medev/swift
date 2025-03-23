@@ -282,12 +282,17 @@ void ArgumentTypeCheckCompletionCallback::sawSolutionImpl(const Solution &S) {
       IncludeSignature = true;
     }
   }
+  
+  SmallString<512> ToPrint;
+  llvm::raw_svector_ostream OS(ToPrint);
+  S.getFixedScore().print(OS);
+  printf("FixedScore -> %s\n", ToPrint.c_str());
 
   Results.push_back(
       {ExpectedTy,  ExpectedCallType, isa<SubscriptExpr>(ParentCall),
        Info.getValue(), FuncTy, ArgIdx, ParamIdx, std::move(ClaimedParams),
        IsNoninitialVariadic, IncludeSignature, Info.BaseTy, HasLabel, FirstTrailingClosureIndex,
-       IsAsync, DeclParamIsOptional, SolutionSpecificVarTypes});
+       IsAsync, DeclParamIsOptional, SolutionSpecificVarTypes, S.getFixedScore()});
 }
 
 void ArgumentTypeCheckCompletionCallback::computeShadowedDecls(
@@ -438,8 +443,17 @@ SignatureHelpResult ArgumentTypeCheckCompletionCallback::getSignatures(
   computeShadowedDecls(ShadowedDecls);
   
   SignatureHelpResult result(DC);
-    
-  for (auto &Result : Results) {
+
+  if (Results.empty())
+    return result;
+
+  // The active signature is the signature with the lowest solution score
+  // TODO(a7medev): Is that the most suitable active signature?
+  std::optional<Score> MinScore;
+  
+  for (size_t i = 0; i < Results.size(); ++i) {
+    auto &Result = Results[i];
+
     // TODO(a7medev): Use the same result output mechanism in code completion
     // Only show call pattern completions if the function isn't
     // overridden.
@@ -450,6 +464,11 @@ SignatureHelpResult ArgumentTypeCheckCompletionCallback::getSignatures(
         Result.ParamIdx, Result.IsNoninitialVariadic, Result.BaseType,
         Result.ExpectedType
       });
+      
+      if (!MinScore || Result.FixedScore < MinScore) {
+        result.ActiveSignature = i;
+        MinScore = Result.FixedScore;
+      }
     }
   }
   

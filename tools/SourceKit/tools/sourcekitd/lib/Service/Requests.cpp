@@ -3610,7 +3610,8 @@ static sourcekitd_response_t signatureHelp(
     Consumer(ResponseBuilder Builder) : SKResult(Builder.getDictionary()) {}
 
     void handleResult(const SignatureHelpResult &Result) override {
-      SKResult.set(KeyActiveSignature, Result.ActiveSignature);
+      if (Result.ActiveSignature.has_value())
+        SKResult.set(KeyActiveSignature, Result.ActiveSignature.value());
 
       auto Signatures = SKResult.setArray(KeyMembers);
 

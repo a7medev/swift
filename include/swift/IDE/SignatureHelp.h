@@ -52,6 +52,9 @@ struct SignatureHelpResult {
   /// The decl context of the parsed expression.
   DeclContext *DC;
 
+  /// The active signature.
+  std::optional<unsigned> ActiveSignature;
+
   /// Suggested signatures.
   SmallVector<Signature, 0> Signatures;
   

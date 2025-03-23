@@ -18,6 +18,7 @@
 #include "swift/IDE/PossibleParamInfo.h"
 #include "swift/IDE/SignatureHelp.h"
 #include "swift/IDE/TypeCheckCompletionCallback.h"
+#include "swift/Sema/ConstraintSystem.h"
 
 namespace swift {
 namespace ide {
@@ -88,6 +89,8 @@ class ArgumentTypeCheckCompletionCallback : public TypeCheckCompletionCallback {
     /// this result. This in particular includes parameters of closures that
     /// were type-checked with the code completion expression.
     llvm::SmallDenseMap<const VarDecl *, Type> SolutionSpecificVarTypes;
+    
+    constraints::Score FixedScore;
   };
 
   CodeCompletionExpr *CompletionExpr;

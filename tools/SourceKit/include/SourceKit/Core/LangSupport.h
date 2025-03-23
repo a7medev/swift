@@ -1015,8 +1015,6 @@ struct SignatureHelpResult {
     unsigned LabelBegin;
     unsigned LabelLength;
     StringRef DocComment;
-    
-    Parameter() {}
   };
   
   struct Signature {
@@ -1026,8 +1024,7 @@ struct SignatureHelpResult {
     ArrayRef<Parameter> Params;
   };
   
-  unsigned ActiveSignature;
-  unsigned ActiveParam; // TODO(a7medev): Do we need this if we have it in each signature?
+  std::optional<unsigned> ActiveSignature;
   ArrayRef<Signature> Signatures;
 };
 

@@ -286,7 +286,6 @@ void ArgumentTypeCheckCompletionCallback::sawSolutionImpl(const Solution &S) {
   SmallString<512> ToPrint;
   llvm::raw_svector_ostream OS(ToPrint);
   S.getFixedScore().print(OS);
-  printf("FixedScore -> %s\n", ToPrint.c_str());
 
   Results.push_back(
       {ExpectedTy,  ExpectedCallType, isa<SubscriptExpr>(ParentCall),

@@ -16,7 +16,9 @@
 #include "swift/IDE/CodeCompletionConsumer.h"
 #include "swift/IDE/CodeCompletionContext.h"
 #include "swift/IDE/PossibleParamInfo.h"
+#include "swift/IDE/SignatureHelp.h"
 #include "swift/IDE/TypeCheckCompletionCallback.h"
+#include "swift/Sema/ConstraintSystem.h"
 
 namespace swift {
 namespace ide {
@@ -87,6 +89,8 @@ class ArgumentTypeCheckCompletionCallback : public TypeCheckCompletionCallback {
     /// this result. This in particular includes parameters of closures that
     /// were type-checked with the code completion expression.
     llvm::SmallDenseMap<const VarDecl *, Type> SolutionSpecificVarTypes;
+    
+    constraints::Score FixedScore;
   };
 
   CodeCompletionExpr *CompletionExpr;
@@ -120,6 +124,9 @@ public:
   void collectResults(bool IsLabeledTrailingClosure,
                       SourceLoc Loc, DeclContext *DC,
                       CodeCompletionContext &CompletionCtx);
+  
+  // TODO(a7medev): add doc comment.
+  SignatureHelpResult getSignatures(SourceLoc Loc, DeclContext *DC);
 };
 
 } // end namespace ide

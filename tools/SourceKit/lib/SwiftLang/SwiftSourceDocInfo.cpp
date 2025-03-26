@@ -1008,7 +1008,8 @@ fillSymbolInfo(CursorSymbolInfo &Symbol, const DeclInfo &DInfo,
   ide::getRawDocumentationComment(DInfo.OriginalProperty, OS);
   Symbol.DocComment = copyAndClearString(Allocator, Buffer);
 
-  ide::getDocumentationCommentAsXML(DInfo.OriginalProperty, OS);
+  ide::getDocumentationCommentAsXML(DInfo.OriginalProperty, OS,
+                                    /*IncludeParameters=*/true);
   Symbol.DocCommentAsXML = copyAndClearString(Allocator, Buffer);
 
   {

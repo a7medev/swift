@@ -465,7 +465,8 @@ static bool initDocEntityInfo(const Decl *D,
       llvm::SmallString<128> DocBuffer;
       {
         llvm::raw_svector_ostream OSS(DocBuffer);
-        ide::getDocumentationCommentAsXML(D, OSS, SynthesizedTarget);
+        ide::getDocumentationCommentAsXML(D, OSS, /*IncludeParameters=*/true,
+                                          SynthesizedTarget);
       }
       OS << DocBuffer;
     }
